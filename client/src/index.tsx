@@ -2,35 +2,26 @@ import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Component } from 'react-simplified';
 import { Card, Row, Column, Form, Button } from './widgets';
-import taskService, { Task } from './task-service';
+import taskService, { Thread } from './task-service';
 import axios from 'axios';
+import { NavLink, HashRouter, Route } from 'react-router-dom';
+import { createHashHistory } from 'history';
 
 class TaskList extends Component {
-  tasks: Task[] = [];
+  threads: Thread[] = [];
 
   render() {
     return (
-      <Card title="Tasks">
-        <Row>
-          <Column>Title</Column>
-          <Column>Done</Column>
-          <Column></Column>
-        </Row>
-        {this.tasks.map((task) => (
-          <Row key={task.id}>
-            <Column>{task.title}</Column>
+      <Card title="Threads">
+        {this.threads.map((thread) => (
+          <Row key={thread.threadId}>
             <Column>
-              <Form.Checkbox
-                checked={task.done}
-                xx={() => {
-                  taskService.patch(task.id).then(() => this.mounted());
-                }}
-              />
+              <NavLink to={'/threads/' + thread.threadId}>{thread.title}</NavLink>
             </Column>
             <Column>
               <Button.Danger
-                xx={() => {
-                  taskService.delete(task.id).then(() => this.mounted());
+                onClick={() => {
+                  taskService.delete(thread.threadId).then(() => this.mounted());
                 }}
               >
                 X
@@ -43,16 +34,17 @@ class TaskList extends Component {
   }
 
   mounted() {
-    taskService.getAll().then((tasks) => (this.tasks = tasks));
+    taskService.getAll().then((threads) => (this.threads = threads));
   }
 }
 
-class TaskNew extends Component {
+class ThreadNew extends Component {
   title = '';
+  content = '';
 
   render() {
     return (
-      <Card title="New task">
+      <Card title="New thread">
         <Row>
           <Column width={1}>
             <Form.Label>Title:</Form.Label>
@@ -62,6 +54,18 @@ class TaskNew extends Component {
               type="text"
               value={this.title}
               onChange={(event) => (this.title = event.currentTarget.value)}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column width={1}>
+            <Form.Label>Content:</Form.Label>
+          </Column>
+          <Column width={4}>
+            <Form.Input
+              type="text"
+              value={this.content}
+              onChange={(event) => (this.content = event.currentTarget.value)}
             />
           </Column>
         </Row>
@@ -85,7 +89,9 @@ let root = document.getElementById('root');
 if (root)
   createRoot(root).render(
     <>
-      <TaskList />
-      <TaskNew />
+      <HashRouter>
+        <TaskList />
+        <ThreadNew />
+      </HashRouter>
     </>,
   );

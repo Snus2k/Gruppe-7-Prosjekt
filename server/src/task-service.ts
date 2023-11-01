@@ -1,10 +1,12 @@
 import pool from './mysql-pool';
 import type { RowDataPacket, ResultSetHeader } from 'mysql2';
 
-export type Task = {
-  id: number;
+export type Thread = {
+  threadId: number;
   title: string;
-  done: boolean;
+  threadContent: string;
+  likes: number;
+  tag: string;
 };
 
 class TaskService {
@@ -12,11 +14,11 @@ class TaskService {
    * Get task with given id.
    */
   get(id: number) {
-    return new Promise<Task | undefined>((resolve, reject) => {
-      pool.query('SELECT * FROM Tasks WHERE id = ?', [id], (error, results: RowDataPacket[]) => {
+    return new Promise<Thread | undefined>((resolve, reject) => {
+      pool.query('SELECT * FROM Threads WHERE id = ?', [id], (error, results: RowDataPacket[]) => {
         if (error) return reject(error);
 
-        resolve(results[0] as Task);
+        resolve(results[0] as Thread);
       });
     });
   }
@@ -25,11 +27,11 @@ class TaskService {
    * Get all tasks.
    */
   getAll() {
-    return new Promise<Task[]>((resolve, reject) => {
-      pool.query('SELECT * FROM Tasks', [], (error, results: RowDataPacket[]) => {
+    return new Promise<Thread[]>((resolve, reject) => {
+      pool.query('SELECT * FROM Threads', [], (error, results: RowDataPacket[]) => {
         if (error) return reject(error);
 
-        resolve(results as Task[]);
+        resolve(results as Thread[]);
       });
     });
   }
@@ -39,13 +41,17 @@ class TaskService {
    *
    * Resolves the newly created task id.
    */
-  create(title: string) {
+  create(title: string, content: string, likes: number, tag: string) {
     return new Promise<number>((resolve, reject) => {
-      pool.query('INSERT INTO Tasks SET title=?', [title], (error, results: ResultSetHeader) => {
-        if (error) return reject(error);
+      pool.query(
+        'INSERT INTO Threads SET title=? content=? likes=? tag=?',
+        [title, content, likes, tag],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
 
-        resolve(results.insertId);
-      });
+          resolve(results.insertId);
+        },
+      );
     });
   }
 
@@ -54,7 +60,7 @@ class TaskService {
    */
   delete(id: number) {
     return new Promise<void>((resolve, reject) => {
-      pool.query('DELETE FROM Tasks WHERE id = ?', [id], (error, results: ResultSetHeader) => {
+      pool.query('DELETE FROM Threads WHERE id = ?', [id], (error, results: ResultSetHeader) => {
         if (error) return reject(error);
         if (results.affectedRows == 0) reject(new Error('No row deleted'));
         resolve();
@@ -64,7 +70,7 @@ class TaskService {
 
   patch(id: number) {
     return new Promise<void>((resolve, reject) => {
-      pool.query('UPDATE Tasks SET done = NOT done WHERE id = ?', [id], (error, results) => {
+      pool.query('UPDATE Threads SET done = NOT done WHERE id = ?', [id], (error, results) => {
         if (error) return reject(error);
         else resolve();
       });

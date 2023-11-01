@@ -6,14 +6,14 @@ import taskService from './task-service';
  */
 const router = express.Router();
 
-router.get('/tasks', (request, response) => {
+router.get('/threads', (request, response) => {
   taskService
     .getAll()
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });
 
-router.get('/tasks/:id', (request, response) => {
+router.get('/threads/:id', (request, response) => {
   const id = Number(request.params.id);
   taskService
     .get(id)
@@ -23,24 +23,24 @@ router.get('/tasks/:id', (request, response) => {
 
 // Example request body: { title: "Ny oppgave" }
 // Example response body: { id: 4 }
-router.post('/tasks', (request, response) => {
+router.post('/threads', (request, response) => {
   const data = request.body;
   if (data && data.title && data.title.length != 0)
     taskService
-      .create(data.title)
+      .create(data.title, data.content, data.likes, data.tag)
       .then((id) => response.send({ id: id }))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Missing task title');
 });
 
-router.delete('/tasks/:id', (request, response) => {
+router.delete('/threads/:id', (request, response) => {
   taskService
     .delete(Number(request.params.id))
     .then((_result) => response.send())
     .catch((error) => response.status(500).send(error));
 });
 
-router.patch('/tasks/:id', (request, response) => {
+router.patch('/threads/:id', (request, response) => {
   const id = Number(request.params.id);
   taskService
     .patch(id)

@@ -2,10 +2,12 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3000/api/v2';
 
-export type Task = {
-  id: number;
+export type Thread = {
+  threadId: number;
   title: string;
-  done: boolean;
+  threadContent: string;
+  likes: number;
+  tag: string;
 };
 
 class TaskService {
@@ -13,14 +15,14 @@ class TaskService {
    * Get task with given id.
    */
   get(id: number) {
-    return axios.get<Task>('/tasks/' + id).then((response) => response.data);
+    return axios.get<Thread>('/threads/' + id).then((response) => response.data);
   }
 
   /**
    * Get all tasks.
    */
   getAll() {
-    return axios.get<Task[]>('/tasks').then((response) => response.data);
+    return axios.get<Thread[]>('/threads').then((response) => response.data);
   }
 
   /**
@@ -30,17 +32,17 @@ class TaskService {
    */
   create(title: string) {
     return axios
-      .post<{ id: number }>('/tasks', { title: title })
-      .then((response) => response.data.id);
+      .post<{ threadId: number }>('/threads', { title: title })
+      .then((response) => response.data.threadId);
   }
 
   /////////OPPGAVER////////////////
   delete(id: number) {
-    return axios.delete(`/tasks/${id}`);
+    return axios.delete(`/threads/${id}`);
   }
 
   patch(id: number) {
-    return axios.patch(`/tasks/${id}`).then((response) => response.data);
+    return axios.patch(`/threads/${id}`).then((response) => response.data);
   }
 }
 
