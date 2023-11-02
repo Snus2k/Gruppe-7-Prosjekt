@@ -25,12 +25,20 @@ router.get('/threads/:id', (request, response) => {
 // Example response body: { id: 4 }
 router.post('/threads', (request, response) => {
   const data = request.body;
-  if (data && data.title && data.title.length != 0)
+  if (
+    data &&
+    data.title &&
+    data.title.length &&
+    data.content &&
+    data.content.length &&
+    data.tag &&
+    data.tag.length != 0
+  )
     taskService
       .create(data.title, data.content, data.likes, data.tag)
-      .then((id) => response.send({ id: id }))
+      .then((threadId) => response.send({ threadId: threadId }))
       .catch((error) => response.status(500).send(error));
-  else response.status(400).send('Missing task title');
+  else response.status(400).send('Missing thread title or content');
 });
 
 router.delete('/threads/:id', (request, response) => {

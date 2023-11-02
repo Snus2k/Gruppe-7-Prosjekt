@@ -12,27 +12,32 @@ export type Thread = {
 
 class TaskService {
   /**
-   * Get task with given id.
+   * Get thread with given id.
    */
-  get(id: number) {
-    return axios.get<Thread>('/threads/' + id).then((response) => response.data);
+  get(threadId: number) {
+    return axios.get<Thread>('/threads/' + threadId).then((response) => response.data);
   }
 
   /**
-   * Get all tasks.
+   * Get all threads.
    */
   getAll() {
     return axios.get<Thread[]>('/threads').then((response) => response.data);
   }
 
   /**
-   * Create new task having the given title.
+   * Create new thread having the given values.
    *
-   * Resolves the newly created task id.
+   * Resolves the newly created thread id.
    */
-  create(title: string) {
+  create(title: string, content: string, likes: number, tag: string) {
     return axios
-      .post<{ threadId: number }>('/threads', { title: title })
+      .post<{ threadId: number }>('/threads', {
+        title: title,
+        likes: likes,
+        content: content,
+        tag: tag,
+      })
       .then((response) => response.data.threadId);
   }
 
