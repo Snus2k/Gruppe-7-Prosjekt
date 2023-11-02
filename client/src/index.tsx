@@ -13,11 +13,34 @@ class TaskList extends Component {
   render() {
     return (
       <Card title="Threads">
+        <Row>
+          <Column>
+            <Form.Label>
+              <b>Title</b>
+            </Form.Label>
+          </Column>
+          <Column>
+            <Form.Label>
+              <b>Likes</b>
+            </Form.Label>
+          </Column>
+          <Column>
+            <Form.Label>
+              <b>Category</b>
+            </Form.Label>
+          </Column>
+          <Column>
+            <Form.Label></Form.Label>
+          </Column>
+        </Row>
+
         {this.threads.map((thread) => (
           <Row key={thread.threadId}>
             <Column>
               <NavLink to={'/threads/' + thread.threadId}>{thread.title}</NavLink>
             </Column>
+            <Column>{thread.likes} 👍</Column>
+            <Column>{thread.tag}</Column>
             <Column>
               <Button.Danger
                 onClick={() => {
@@ -41,6 +64,8 @@ class TaskList extends Component {
 class ThreadNew extends Component {
   title = '';
   content = '';
+  tag = '';
+  likes = 0;
 
   render() {
     return (
@@ -61,20 +86,43 @@ class ThreadNew extends Component {
           <Column width={1}>
             <Form.Label>Content:</Form.Label>
           </Column>
-          <Column width={4}>
-            <Form.Input
-              type="text"
+          <Column width={5}>
+            <Form.Textarea
               value={this.content}
               onChange={(event) => (this.content = event.currentTarget.value)}
             />
           </Column>
         </Row>
+
+        <Row>
+          <Column width={1}>
+            <Form.Label>Tag:</Form.Label>
+          </Column>
+          <Column>
+            <Form.Select
+              value={this.tag}
+              onChange={(event) => (this.tag = event.currentTarget.value)}
+            >
+              <option value="Career">Career</option>
+              <option value="Career">Entertainment</option>
+              <option value="Food">Food</option>
+              <option value="Career">Health</option>
+              <option value="Career">Lifestyle</option>
+              <option value="Career">Reading</option>
+              <option value="Technology">Technology</option>
+            </Form.Select>
+          </Column>
+        </Row>
+
         <Button.Success
           onClick={() => {
-            taskService.create(this.title).then(() => {
+            console.log(this.title, this.likes, this.content, this.tag);
+            taskService.create(this.title, this.content, this.likes, this.tag).then(() => {
               // Reloads the tasks in the Tasks component
               TaskList.instance()?.mounted(); // .? meaning: call TaskList.instance().mounted() if TaskList.instance() does not return null
               this.title = '';
+              this.content = '';
+              this.tag = '';
             });
           }}
         >

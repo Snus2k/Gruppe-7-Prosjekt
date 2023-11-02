@@ -44,7 +44,7 @@ class TaskService {
   create(title: string, content: string, likes: number, tag: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
-        'INSERT INTO Threads SET title=? content=? likes=? tag=?',
+        'INSERT INTO Threads SET title=?, threadContent=?, likes=?, tag=?',
         [title, content, likes, tag],
         (error, results: ResultSetHeader) => {
           if (error) return reject(error);
