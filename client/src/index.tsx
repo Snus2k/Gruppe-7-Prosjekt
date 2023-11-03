@@ -10,6 +10,7 @@ import { createHashHistory } from 'history';
 class TaskList extends Component {
   threads: Thread[] = [];
   tempThreads: Thread[] = [];
+  sortToggle = 'Sort by: None';
 
   searchHitThreads: Thread[] = [];
   searchText: string = 'Search title';
@@ -20,12 +21,32 @@ class TaskList extends Component {
         <div className="float-end">
           <Row>
             <Column>
+              <Form.Select
+                value={this.sortToggle}
+                onChange={(event) => {
+                  this.sortToggle = event.currentTarget.value;
+                  TaskList.instance()?.mounted();
+                }}
+              >
+                <option value="Sort by: None">Sort by: None</option>
+                <option value="Sort by: Most Likes">Sort by: Most Likes</option>
+                <option value="Sort by: Least Likes">Sort by: Least Likes</option>
+                <option value="Sort by: Ascending Alphabetical order">
+                  Sort by: Ascending Alphabetical order
+                </option>
+                <option value="Sort by: Descending Alphabetical order">
+                  Sort by: Descending Alphabetical order
+                </option>
+              </Form.Select>
+            </Column>
+            <Column>
               <Form.Input
                 type="text"
                 value={this.searchText}
                 onChange={(event) => (this.searchText = event.currentTarget.value)}
               />
             </Column>
+
             <Column>
               <Button.Light
                 onClick={() => {
@@ -56,6 +77,7 @@ class TaskList extends Component {
             <Form.Label>
               <b>Likes</b>
             </Form.Label>
+            <Button.Light onClick={() => {}}>🔼</Button.Light>
           </Column>
           <Column>
             <Form.Label>
@@ -93,9 +115,56 @@ class TaskList extends Component {
     taskService.getAll().then((threads) => {
       if (this.searchText != '' && this.searchText != 'Search title') {
         this.threads = this.searchHitThreads;
+
+        switch (this.sortToggle) {
+          case 'Sort by: Most Likes':
+            this.searchHitThreads.sort((a, b) => b.likes - a.likes);
+            break;
+          case 'Sort by: Least Likes':
+            this.searchHitThreads.sort((a, b) => a.likes - b.likes);
+            break;
+          case 'Sort by: Ascending Alphabetical order':
+            this.searchHitThreads.sort((a, b) =>
+              a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1,
+            );
+            break;
+          case 'Sort by: Descending Alphabetical order':
+            this.searchHitThreads.sort((a, b) =>
+              a.title.toLowerCase() < b.title.toLowerCase() ? 1 : -1,
+            );
+            break;
+          default:
+            break;
+        }
       } else {
         this.threads = threads;
         this.tempThreads = threads;
+
+        switch (this.sortToggle) {
+          case 'Sort by: Most Likes':
+            this.threads.sort((a, b) => b.likes - a.likes);
+            this.tempThreads.sort((a, b) => b.likes - a.likes);
+
+            break;
+          case 'Sort by: Least Likes':
+            this.threads.sort((a, b) => a.likes - b.likes);
+            this.tempThreads.sort((a, b) => a.likes - b.likes);
+            break;
+          case 'Sort by: Ascending Alphabetical order':
+            this.threads.sort((a, b) => (a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1));
+            this.tempThreads.sort((a, b) =>
+              a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1,
+            );
+            break;
+          case 'Sort by: Descending Alphabetical order':
+            this.threads.sort((a, b) => (a.title.toLowerCase() < b.title.toLowerCase() ? 1 : -1));
+            this.tempThreads.sort((a, b) =>
+              a.title.toLowerCase() < b.title.toLowerCase() ? 1 : -1,
+            );
+            break;
+          default:
+            break;
+        }
       }
     });
   }
