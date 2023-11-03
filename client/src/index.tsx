@@ -9,10 +9,43 @@ import { createHashHistory } from 'history';
 
 class TaskList extends Component {
   threads: Thread[] = [];
+  tempThreads: Thread[] = [];
+
+  searchHitThreads: Thread[] = [];
+  searchText: string = 'Search title';
 
   render() {
     return (
       <Card title="Threads">
+        <div className="float-end">
+          <Row>
+            <Column>
+              <Form.Input
+                type="text"
+                value={this.searchText}
+                onChange={(event) => (this.searchText = event.currentTarget.value)}
+              />
+            </Column>
+            <Column>
+              <Button.Light
+                onClick={() => {
+                  this.searchHitThreads.length = 0;
+
+                  this.tempThreads.forEach((thread) => {
+                    if (thread.title.toLowerCase().includes(this.searchText.toLowerCase())) {
+                      this.searchHitThreads.push(thread);
+                    }
+                  });
+
+                  TaskList.instance()?.mounted();
+                }}
+              >
+                🔍
+              </Button.Light>
+            </Column>
+          </Row>
+        </div>
+
         <Row>
           <Column>
             <Form.Label>
@@ -29,9 +62,9 @@ class TaskList extends Component {
               <b>Category</b>
             </Form.Label>
           </Column>
-          <Column>
+          {/* <Column>
             <Form.Label></Form.Label>
-          </Column>
+          </Column> */}
         </Row>
 
         {this.threads.map((thread) => (
@@ -41,7 +74,7 @@ class TaskList extends Component {
             </Column>
             <Column>{thread.likes} 👍</Column>
             <Column>{thread.tag}</Column>
-            <Column>
+            {/* <Column>
               <Button.Danger
                 onClick={() => {
                   taskService.delete(thread.threadId).then(() => this.mounted());
@@ -49,7 +82,7 @@ class TaskList extends Component {
               >
                 X
               </Button.Danger>
-            </Column>
+            </Column> */}
           </Row>
         ))}
       </Card>
@@ -57,7 +90,14 @@ class TaskList extends Component {
   }
 
   mounted() {
-    taskService.getAll().then((threads) => (this.threads = threads));
+    taskService.getAll().then((threads) => {
+      if (this.searchText != '' && this.searchText != 'Search title') {
+        this.threads = this.searchHitThreads;
+      } else {
+        this.threads = threads;
+        this.tempThreads = threads;
+      }
+    });
   }
 }
 
@@ -69,66 +109,68 @@ class ThreadNew extends Component {
 
   render() {
     return (
-      <Card title="New thread">
-        <Row>
-          <Column width={1}>
-            <Form.Label>Title:</Form.Label>
-          </Column>
-          <Column width={4}>
-            <Form.Input
-              type="text"
-              value={this.title}
-              onChange={(event) => (this.title = event.currentTarget.value)}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column width={1}>
-            <Form.Label>Content:</Form.Label>
-          </Column>
-          <Column width={5}>
-            <Form.Textarea
-              value={this.content}
-              onChange={(event) => (this.content = event.currentTarget.value)}
-            />
-          </Column>
-        </Row>
+      <div className="fixed-bottom">
+        <Card title="New thread">
+          <Row>
+            <Column width={1}>
+              <Form.Label>Title:</Form.Label>
+            </Column>
+            <Column width={4}>
+              <Form.Input
+                type="text"
+                value={this.title}
+                onChange={(event) => (this.title = event.currentTarget.value)}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column width={1}>
+              <Form.Label>Content:</Form.Label>
+            </Column>
+            <Column width={5}>
+              <Form.Textarea
+                value={this.content}
+                onChange={(event) => (this.content = event.currentTarget.value)}
+              />
+            </Column>
+          </Row>
 
-        <Row>
-          <Column width={1}>
-            <Form.Label>Tag:</Form.Label>
-          </Column>
-          <Column>
-            <Form.Select
-              value={this.tag}
-              onChange={(event) => (this.tag = event.currentTarget.value)}
-            >
-              <option value="Career">Career</option>
-              <option value="Career">Entertainment</option>
-              <option value="Food">Food</option>
-              <option value="Career">Health</option>
-              <option value="Career">Lifestyle</option>
-              <option value="Career">Reading</option>
-              <option value="Technology">Technology</option>
-            </Form.Select>
-          </Column>
-        </Row>
+          <Row>
+            <Column width={1}>
+              <Form.Label>Tag:</Form.Label>
+            </Column>
+            <Column>
+              <Form.Select
+                value={this.tag}
+                onChange={(event) => (this.tag = event.currentTarget.value)}
+              >
+                <option value="Career">Career</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Food">Food</option>
+                <option value="Health">Health</option>
+                <option value="Lifestyle">Lifestyle</option>
+                <option value="Reading">Reading</option>
+                <option value="Technology">Technology</option>
+              </Form.Select>
+            </Column>
+          </Row>
 
-        <Button.Success
-          onClick={() => {
-            console.log(this.title, this.likes, this.content, this.tag);
-            taskService.create(this.title, this.content, this.likes, this.tag).then(() => {
-              // Reloads the tasks in the Tasks component
-              TaskList.instance()?.mounted(); // .? meaning: call TaskList.instance().mounted() if TaskList.instance() does not return null
-              this.title = '';
-              this.content = '';
-              this.tag = '';
-            });
-          }}
-        >
-          Create
-        </Button.Success>
-      </Card>
+          <Button.Success
+            onClick={() => {
+              console.log(this.title, this.likes, this.content, this.tag);
+              taskService.create(this.title, this.content, this.likes, this.tag).then(() => {
+                // Reloads the tasks in the Tasks component
+                TaskList.instance()?.mounted(); // .? meaning: call TaskList.instance().mounted() if TaskList.instance() does not return null
+                this.title = '';
+                this.content = '';
+                this.tag = '';
+              });
+            }}
+          >
+            Create
+          </Button.Success>
+        </Card>
+      </div>
     );
   }
 }
