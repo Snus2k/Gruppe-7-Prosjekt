@@ -9,6 +9,13 @@ export type Thread = {
   tag: string;
 };
 
+interface Subthread {
+  threadId: number;
+  subthreadId: number;
+  likes: number;
+  subthreadContent: string;
+}
+
 class TaskService {
   /**
    * Get task with given id.
@@ -22,9 +29,22 @@ class TaskService {
       });
     });
   }
+  getSubthread(id: number) {
+    return new Promise<Subthread | undefined>((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM Subthreads WHERE id = ?',
+        [id],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
+
+          resolve(results[0] as Subthread);
+        },
+      );
+    });
+  }
 
   /**
-   * Get all tasks.
+   * Get all subthreads.
    */
   getAll() {
     return new Promise<Thread[]>((resolve, reject) => {
