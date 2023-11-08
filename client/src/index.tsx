@@ -34,85 +34,84 @@ class TaskList extends Component {
 
   render() {
     return (
+      <div>
+        <Card title="Threads">
+          <div className="float-end">
+            <Row>
+              <Column>
+                <Form.Select
+                  value={this.sortToggle}
+                  onChange={(event) => {
+                    this.sortToggle = event.currentTarget.value;
+                    TaskList.instance()?.mounted();
+                  }}
+                >
+                  <option value="Sort by: None">Sort by: None</option>
+                  <option value="Sort by: Most Likes">Sort by: Most Likes</option>
+                  <option value="Sort by: Least Likes">Sort by: Least Likes</option>
+                  <option value="Sort by: Ascending Alphabetical order">
+                    Sort by: Ascending Alphabetical order
+                  </option>
+                  <option value="Sort by: Descending Alphabetical order">
+                    Sort by: Descending Alphabetical order
+                  </option>
+                </Form.Select>
+              </Column>
+              <Column>
+                <Form.Input
+                  type="text"
+                  value={this.searchText}
+                  onChange={(event) => (this.searchText = event.currentTarget.value)}
+                />
+              </Column>
 
-      <Card title="Threads">
-        <div className="float-end">
+              <Column>
+                <Button.Light
+                  onClick={() => {
+                    this.searchHitThreads.length = 0;
+
+                    this.tempThreads.forEach((thread) => {
+                      if (thread.title.toLowerCase().includes(this.searchText.toLowerCase())) {
+                        this.searchHitThreads.push(thread);
+                      }
+                    });
+
+                    TaskList.instance()?.mounted();
+                  }}
+                >
+                  🔍
+                </Button.Light>
+              </Column>
+            </Row>
+          </div>
+
           <Row>
             <Column>
-              <Form.Select
-                value={this.sortToggle}
-                onChange={(event) => {
-                  this.sortToggle = event.currentTarget.value;
-                  TaskList.instance()?.mounted();
-                }}
-              >
-                <option value="Sort by: None">Sort by: None</option>
-                <option value="Sort by: Most Likes">Sort by: Most Likes</option>
-                <option value="Sort by: Least Likes">Sort by: Least Likes</option>
-                <option value="Sort by: Ascending Alphabetical order">
-                  Sort by: Ascending Alphabetical order
-                </option>
-                <option value="Sort by: Descending Alphabetical order">
-                  Sort by: Descending Alphabetical order
-                </option>
-              </Form.Select>
+              <Form.Label>
+                <b>Title</b>
+              </Form.Label>
             </Column>
             <Column>
-              <Form.Input
-                type="text"
-                value={this.searchText}
-                onChange={(event) => (this.searchText = event.currentTarget.value)}
-              />
+              <Form.Label>
+                <b>Likes</b>
+              </Form.Label>
+              <Button.Light onClick={() => {}}>🔼</Button.Light>
             </Column>
-
             <Column>
-              <Button.Light
-                onClick={() => {
-                  this.searchHitThreads.length = 0;
-
-                  this.tempThreads.forEach((thread) => {
-                    if (thread.title.toLowerCase().includes(this.searchText.toLowerCase())) {
-                      this.searchHitThreads.push(thread);
-                    }
-                  });
-
-                  TaskList.instance()?.mounted();
-                }}
-              >
-                🔍
-              </Button.Light>
+              <Form.Label>
+                <b>Category</b>
+              </Form.Label>
             </Column>
           </Row>
-        </div>
-
-        <Row>
-          <Column>
-            <Form.Label>
-              <b>Title</b>
-            </Form.Label>
-          </Column>
-          <Column>
-            <Form.Label>
-              <b>Likes</b>
-            </Form.Label>
-            <Button.Light onClick={() => {}}>🔼</Button.Light>
-          </Column>
-          <Column>
-            <Form.Label>
-              <b>Category</b>
-            </Form.Label>
-          </Column>
-     
-        </Row>
-
+        </Card>
         {this.threads.map((thread) => (
           <Row key={thread.threadId}>
             <Column>{thread.title}</Column>
             <Column>{thread.likes} 👍</Column>
             <Column>{thread.tag}</Column>
-     
-=======
-      <>
+          </Row>
+        ))}
+        ;
         <Card title="Threads">
           <Row>
             <Column>
@@ -133,7 +132,6 @@ class TaskList extends Component {
             <Column>
               <Form.Label></Form.Label>
             </Column>
-
           </Row>
 
           {this.threads.map((thread) => (
@@ -163,7 +161,6 @@ class TaskList extends Component {
             </Row>
           ))}
         </Card>
-
         {this.state.isModalOpen && (
           <Modal
             show={this.state.isModalOpen}
@@ -171,7 +168,7 @@ class TaskList extends Component {
             thread={this.state.selectedThread}
           />
         )}
-      </>
+      </div>
     );
   }
 
@@ -311,10 +308,8 @@ class ThreadNew extends Component {
 let root = document.getElementById('root');
 if (root)
   createRoot(root).render(
-    <>
-      <HashRouter>
-        <TaskList />
-        <ThreadNew />
-      </HashRouter>
-    </>,
+    <HashRouter>
+      <TaskList />
+      <ThreadNew />
+    </HashRouter>,
   );
