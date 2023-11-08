@@ -6,7 +6,6 @@ import taskService, { Thread } from './task-service';
 import axios from 'axios';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { createHashHistory } from 'history';
-import { Modal } from './threadModal';
 
 class TaskList extends Component {
   threads: Thread[] = [];
@@ -16,114 +15,86 @@ class TaskList extends Component {
   searchHitThreads: Thread[] = [];
   searchText: string = 'Search title';
 
-  state = {
-    isModalOpen: false,
-    selectedThread: null,
-  };
-
-  openModalWithThread = (thread: Thread) => {
-    this.setState({
-      selectedThread: thread,
-      isModalOpen: true,
-    });
-  };
-
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
-  };
-
   render() {
     return (
-      <>
-        <Card title="Threads">
-          <div className="float-end">
-            <Row>
-              <Column>
-                <Form.Select
-                  value={this.sortToggle}
-                  onChange={(event) => {
-                    this.sortToggle = event.currentTarget.value;
-                    TaskList.instance()?.mounted();
-                  }}
-                >
-                  <option value="Sort by: None">Sort by: None</option>
-                  <option value="Sort by: Most Likes">Sort by: Most Likes</option>
-                  <option value="Sort by: Least Likes">Sort by: Least Likes</option>
-                  <option value="Sort by: Ascending Alphabetical order">
-                    Sort by: Ascending Alphabetical order
-                  </option>
-                  <option value="Sort by: Descending Alphabetical order">
-                    Sort by: Descending Alphabetical order
-                  </option>
-                </Form.Select>
-              </Column>
-              <Column>
-                <Form.Input
-                  type="text"
-                  value={this.searchText}
-                  onChange={(event) => (this.searchText = event.currentTarget.value)}
-                />
-              </Column>
-
-              <Column>
-                <Button.Light
-                  onClick={() => {
-                    this.searchHitThreads.length = 0;
-
-                    this.tempThreads.forEach((thread) => {
-                      if (thread.title.toLowerCase().includes(this.searchText.toLowerCase())) {
-                        this.searchHitThreads.push(thread);
-                      }
-                    });
-
-                    TaskList.instance()?.mounted();
-                  }}
-                >
-                  🔍
-                </Button.Light>
-              </Column>
-            </Row>
-          </div>
-
+      <Card title="Threads">
+        <div className="float-end">
           <Row>
             <Column>
-              <Form.Label>
-                <b>Title</b>
-              </Form.Label>
+              <Form.Select
+                value={this.sortToggle}
+                onChange={(event) => {
+                  this.sortToggle = event.currentTarget.value;
+                  TaskList.instance()?.mounted();
+                }}
+              >
+                <option value="Sort by: None">Sort by: None</option>
+                <option value="Sort by: Most Likes">Sort by: Most Likes</option>
+                <option value="Sort by: Least Likes">Sort by: Least Likes</option>
+                <option value="Sort by: Ascending Alphabetical order">
+                  Sort by: Ascending Alphabetical order
+                </option>
+                <option value="Sort by: Descending Alphabetical order">
+                  Sort by: Descending Alphabetical order
+                </option>
+              </Form.Select>
             </Column>
             <Column>
-              <Form.Label>
-                <b>Likes</b>
-              </Form.Label>
-              <Button.Light onClick={() => {}}>🔼</Button.Light>
+              <Form.Input
+                type="text"
+                value={this.searchText}
+                onChange={(event) => (this.searchText = event.currentTarget.value)}
+              />
             </Column>
+
             <Column>
-              <Form.Label>
-                <b>Category</b>
-              </Form.Label>
+              <Button.Light
+                onClick={() => {
+                  this.searchHitThreads.length = 0;
+
+                  this.tempThreads.forEach((thread) => {
+                    if (thread.title.toLowerCase().includes(this.searchText.toLowerCase())) {
+                      this.searchHitThreads.push(thread);
+                    }
+                  });
+
+                  TaskList.instance()?.mounted();
+                }}
+              >
+                🔍
+              </Button.Light>
             </Column>
-            {/* <Column>
+          </Row>
+        </div>
+
+        <Row>
+          <Column>
+            <Form.Label>
+              <b>Title</b>
+            </Form.Label>
+          </Column>
+          <Column>
+            <Form.Label>
+              <b>Likes</b>
+            </Form.Label>
+            <Button.Light onClick={() => {}}>🔼</Button.Light>
+          </Column>
+          <Column>
+            <Form.Label>
+              <b>Category</b>
+            </Form.Label>
+          </Column>
+          {/* <Column>
             <Form.Label></Form.Label>
           </Column> */}
-          </Row>
+        </Row>
 
-          {this.threads.map((thread) => (
-            <Row key={thread.threadId}>
-              <Column>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    this.openModalWithThread(thread);
-                  }}
-                >
-                  {' '}
-                  {thread.title}
-                </a>
-              </Column>
-              <Column>{thread.likes} 👍</Column>
-              <Column>{thread.tag}</Column>
-              {/* <Column>
+        {this.threads.map((thread) => (
+          <Row key={thread.threadId}>
+            <Column>{thread.title}</Column>
+            <Column>{thread.likes} 👍</Column>
+            <Column>{thread.tag}</Column>
+            {/* <Column>
               <Button.Danger
                 onClick={() => {
                   taskService.delete(thread.threadId).then(() => this.mounted());
@@ -132,17 +103,9 @@ class TaskList extends Component {
                 X
               </Button.Danger>
             </Column> */}
-            </Row>
-          ))}
-        </Card>
-        {this.state.isModalOpen && (
-          <Modal
-            show={this.state.isModalOpen}
-            onClose={this.closeModal}
-            thread={this.state.selectedThread}
-          />
-        )}
-      </>
+          </Row>
+        ))}
+      </Card>
     );
   }
 
