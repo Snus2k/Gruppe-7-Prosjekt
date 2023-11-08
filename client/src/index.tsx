@@ -6,6 +6,7 @@ import taskService, { Thread } from './task-service';
 import axios from 'axios';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { createHashHistory } from 'history';
+import { Modal } from './threadModal';
 
 class TaskList extends Component {
   threads: Thread[] = [];
@@ -15,8 +16,25 @@ class TaskList extends Component {
   searchHitThreads: Thread[] = [];
   searchText: string = 'Search title';
 
+  state = {
+    isModalOpen: false,
+    selectedThread: null,
+  };
+
+  openModalWithThread = (thread: Thread) => {
+    this.setState({
+      selectedThread: thread,
+      isModalOpen: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
   render() {
     return (
+
       <Card title="Threads">
         <div className="float-end">
           <Row>
@@ -84,9 +102,7 @@ class TaskList extends Component {
               <b>Category</b>
             </Form.Label>
           </Column>
-          {/* <Column>
-            <Form.Label></Form.Label>
-          </Column> */}
+     
         </Row>
 
         {this.threads.map((thread) => (
@@ -94,18 +110,68 @@ class TaskList extends Component {
             <Column>{thread.title}</Column>
             <Column>{thread.likes} 👍</Column>
             <Column>{thread.tag}</Column>
-            {/* <Column>
-              <Button.Danger
-                onClick={() => {
-                  taskService.delete(thread.threadId).then(() => this.mounted());
-                }}
-              >
-                X
-              </Button.Danger>
-            </Column> */}
+     
+=======
+      <>
+        <Card title="Threads">
+          <Row>
+            <Column>
+              <Form.Label>
+                <b>Title</b>
+              </Form.Label>
+            </Column>
+            <Column>
+              <Form.Label>
+                <b>Likes</b>
+              </Form.Label>
+            </Column>
+            <Column>
+              <Form.Label>
+                <b>Category</b>
+              </Form.Label>
+            </Column>
+            <Column>
+              <Form.Label></Form.Label>
+            </Column>
+
           </Row>
-        ))}
-      </Card>
+
+          {this.threads.map((thread) => (
+            <Row key={thread.threadId}>
+              <Column>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.openModalWithThread(thread);
+                  }}
+                >
+                  {thread.title}
+                </a>
+              </Column>
+              <Column>{thread.likes} 👍</Column>
+              <Column>{thread.tag}</Column>
+              <Column>
+                <Button.Danger
+                  onClick={() => {
+                    taskService.delete(thread.threadId).then(() => this.mounted());
+                  }}
+                >
+                  X
+                </Button.Danger>
+              </Column>
+            </Row>
+          ))}
+        </Card>
+
+        {this.state.isModalOpen && (
+          <Modal
+            show={this.state.isModalOpen}
+            onClose={this.closeModal}
+            thread={this.state.selectedThread}
+          />
+        )}
+      </>
     );
   }
 

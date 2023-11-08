@@ -9,6 +9,12 @@ export type Thread = {
   likes: number;
   tag: string;
 };
+export type subThread = {
+  threadId: number;
+  subthreadId: number;
+  subthreadContent: string;
+  likes: number;
+};
 
 class TaskService {
   /**
@@ -23,6 +29,10 @@ class TaskService {
    */
   getAll() {
     return axios.get<Thread[]>('/threads').then((response) => response.data);
+  }
+
+  getAllCommentsWhereId() {
+    return axios.get<subThread[]>('/subthreads').then((response) => response.data);
   }
 
   /**

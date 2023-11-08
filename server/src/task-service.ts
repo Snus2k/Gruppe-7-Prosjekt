@@ -9,10 +9,14 @@ export type Thread = {
   tag: string;
 };
 
+export type Subthread = {
+  threadId: number;
+  subthreadId: number;
+  likes: number;
+  subthreadContent: string;
+};
+
 class TaskService {
-  /**
-   * Get task with given id.
-   */
   get(id: number) {
     return new Promise<Thread | undefined>((resolve, reject) => {
       pool.query('SELECT * FROM Threads WHERE id = ?', [id], (error, results: RowDataPacket[]) => {
@@ -22,9 +26,24 @@ class TaskService {
       });
     });
   }
+  getSubthreads(id: number): Promise<Subthread[]> {
+    return new Promise<Subthread[]>((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM Subthreads WHERE threadId = ?',
+        [id],
+        (error, results: RowDataPacket[]) => {
+          if (error) {
+            return reject(error);
+          }
+
+          resolve(results as Subthread[]);
+        },
+      );
+    });
+  }
 
   /**
-   * Get all tasks.
+   * Get all subthreads.
    */
   getAll() {
     return new Promise<Thread[]>((resolve, reject) => {
@@ -46,6 +65,19 @@ class TaskService {
       pool.query(
         'INSERT INTO Threads SET title=?, threadContent=?, likes=?, tag=?',
         [title, content, likes, tag],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve(results.insertId);
+        },
+      );
+    });
+  }
+  createComment(threadId: string, content: string) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO Subthreads SET threadId=?, subthreadContent=?',
+        [content, threadId],
         (error, results: ResultSetHeader) => {
           if (error) return reject(error);
 
