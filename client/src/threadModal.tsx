@@ -48,6 +48,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     if (!this.props.show) {
       return null;
     }
+    console.log(this.props);
 
     const content = this.props.thread ? (
       <div>

@@ -9,12 +9,12 @@ export type Thread = {
   tag: string;
 };
 
-interface Subthread {
+export type Subthread = {
   threadId: number;
   subthreadId: number;
   likes: number;
   subthreadContent: string;
-}
+};
 
 class TaskService {
   /**
@@ -32,7 +32,7 @@ class TaskService {
   getSubthread(id: number) {
     return new Promise<Subthread | undefined>((resolve, reject) => {
       pool.query(
-        'SELECT * FROM Subthreads WHERE id = ?',
+        'SELECT * FROM Subthreads WHERE threadId = ?',
         [id],
         (error, results: RowDataPacket[]) => {
           if (error) return reject(error);
