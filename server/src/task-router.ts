@@ -23,9 +23,8 @@ router.get('/threads/:id', (request, response) => {
 
 router.get('/Subthreads/:id', (request, response) => {
   const id = Number(request.params.id);
-  console.log('inne i router.get' + id);
   taskService
-    .getSubthread(id)
+    .getSubthreads(id)
     .then((subthread) =>
       subthread ? response.send(subthread) : response.status(404).send('Subthread not found'),
     )
@@ -35,6 +34,21 @@ router.get('/Subthreads/:id', (request, response) => {
     });
 });
 
+router.post('/Subthreads/:id', (request, response) => {
+  const data = request.body;
+  if (
+    data &&
+    data.subthreadContent &&
+    data.subthreadContent.length &&
+    data.threadId &&
+    data.threadId != 0
+  )
+    taskService
+      .createComment(data.content, data.tag)
+      .then((threadId) => response.send({ threadId: threadId }))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Missing content');
+});
 router.post('/threads', (request, response) => {
   const data = request.body;
   if (

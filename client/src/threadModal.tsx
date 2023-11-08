@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Card } from './widgets';
+import { Card, Row, Column, Form, Button } from './widgets';
 import { Thread } from './task-service';
 
 import './threadModal.css';
@@ -43,6 +43,17 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         this.setState({ error: error.message, subthreads: null });
       });
   }
+  postToSubthread(threadId: number, content: String) {
+    //Create comment
+    axios
+      .post(`/Subthreads/${threadId}`)
+      .then((response) => {
+        this.setState({ subthreads: response.data, error: null });
+      })
+      .catch((error) => {
+        this.setState({ error: error.message, subthreads: null });
+      });
+  }
 
   render() {
     if (!this.props.show) {
@@ -54,12 +65,18 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       <div>
         <h1>{this.props.thread.title}</h1>
         {this.state.subthreads ? (
-          <Card title="Comments">
+          <Card title="Comments:">
             {this.state.subthreads.map((subthread) => (
-              <div key={subthread.subthreadId}>
-                <h3>{subthread.likes}</h3>
-                <p>{subthread.subthreadContent}</p>
-              </div>
+              <Row key={subthread.subthreadId}>
+                <Column>
+                  <Card title="">
+                    <p>{subthread.subthreadContent}</p>
+                    <Column right={true}>
+                      <b>Likes: {subthread.likes}</b>
+                    </Column>
+                  </Card>
+                </Column>
+              </Row>
             ))}
           </Card>
         ) : this.state.error ? (
@@ -76,7 +93,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       <div className="modal-overlay" onClick={this.props.onClose}>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           {content}
-          <button onClick={this.props.onClose}>Close</button>
+          <Button.Danger onClick={this.props.onClose}>Close</Button.Danger>
         </div>
       </div>
     );
