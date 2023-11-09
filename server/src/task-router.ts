@@ -44,7 +44,7 @@ router.post('/Subthreads/:id', (request, response) => {
     data.threadId != 0
   )
     taskService
-      .createComment(data.content, data.tag)
+      .createComment(data.content, data.likes, data.threadId)
       .then((threadId) => response.send({ threadId: threadId }))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Missing content');

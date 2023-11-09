@@ -73,11 +73,11 @@ class TaskService {
       );
     });
   }
-  createComment(threadId: string, content: string) {
+  createComment(content: string, likes: number, threadId: number) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
-        'INSERT INTO Subthreads SET threadId=?, subthreadContent=?',
-        [content, threadId],
+        'INSERT INTO Subthreads SET subthreadContent=?, likes=?, threadId=?',
+        [content, likes, threadId],
         (error, results: ResultSetHeader) => {
           if (error) return reject(error);
 
