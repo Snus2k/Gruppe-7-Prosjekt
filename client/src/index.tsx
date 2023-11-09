@@ -35,7 +35,6 @@ class TaskList extends Component {
   render() {
     return (
       <div>
-        ;
         <Card title="Threads">
           <Row>
             <Column>
@@ -209,7 +208,7 @@ class ThreadNew extends Component {
 
   render() {
     return (
-      <div className="fixed-bottom">
+      <div style={{ position: 'fixed', width: '100%', bottom: 0, left: 0, zIndex: 1 }}>
         <Card title="New thread">
           <Row>
             <Column width={1}>

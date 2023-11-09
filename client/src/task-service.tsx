@@ -51,6 +51,16 @@ class TaskService {
       .then((response) => response.data.threadId);
   }
 
+  createComment(content: string, likes: number, threadId: number) {
+    return axios
+      .post<{ threadId: number }>('/subthreads', {
+        subthreadContent: content,
+        likes: likes,
+        threadId: threadId,
+      })
+      .then((response) => response.data.threadId);
+  }
+
   /////////OPPGAVER////////////////
   delete(id: number) {
     return axios.delete(`/threads/${id}`);

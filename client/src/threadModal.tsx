@@ -24,6 +24,8 @@ interface ModalState {
 }
 
 export class Modal extends React.Component<ModalProps, ModalState> {
+  subthreadContent = '';
+
   state: ModalState = {
     subthreads: null,
     error: null,
@@ -43,7 +45,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         this.setState({ error: error.message, subthreads: null });
       });
   }
-  postToSubthread(threadId: number, content: String) {
+  postToSubthread(subthreadContent: String, likes: number, threadId: number) {
     //Create comment
     axios
       .post(`/Subthreads/${threadId}`)
@@ -63,22 +65,65 @@ export class Modal extends React.Component<ModalProps, ModalState> {
 
     const content = this.props.thread ? (
       <div>
-        <h1>{this.props.thread.title}</h1>
+        <Card title={this.props.thread.title}>
+          <Row>
+            <p>{this.props.thread.threadContent}</p>
+          </Row>
+          <Row>
+            <Column>
+              <b>Likes: {this.props.thread.likes}</b>
+            </Column>
+            <Column>
+              <Button.Light onClick={() => {}}> 👍</Button.Light>
+              <Button.Light onClick={() => {}}> 👎</Button.Light>
+            </Column>
+            <Column>
+              <Button.Light onClick={() => {}}> ⭐️ </Button.Light>
+            </Column>
+          </Row>
+        </Card>
+
         {this.state.subthreads ? (
-          <Card title="Comments:">
-            {this.state.subthreads.map((subthread) => (
-              <Row key={subthread.subthreadId}>
-                <Column>
-                  <Card title="">
-                    <p>{subthread.subthreadContent}</p>
-                    <Column right={true}>
-                      <b>Likes: {subthread.likes}</b>
-                    </Column>
-                  </Card>
+          <div>
+            <Card title="Comments:">
+              {this.state.subthreads.map((subthread) => (
+                <Row key={subthread.subthreadId}>
+                  <Column>
+                    <Card title="">
+                      <p>{subthread.subthreadContent}</p>
+                      <Column right={true}>
+                        <b>Likes: {subthread.likes}</b>
+                      </Column>
+                    </Card>
+                  </Column>
+                </Row>
+              ))}
+            </Card>
+
+            <Card title="New comment">
+              <Row>
+                <Column width={1}>
+                  <Form.Label>Content:</Form.Label>
+                </Column>
+                <Column width={5}>
+                  <Form.Textarea
+                    value={this.subthreadContent}
+                    onChange={(event) => (this.subthreadContent = event.currentTarget.value)}
+                  />
                 </Column>
               </Row>
-            ))}
-          </Card>
+
+              <Button.Success
+                onClick={() => {
+                  this.postToSubthread(this.subthreadContent, 0, this.props.thread.threadId);
+
+                  this.subthreadContent = '';
+                }}
+              >
+                Create
+              </Button.Success>
+            </Card>
+          </div>
         ) : this.state.error ? (
           <div>Error: {this.state.error}</div>
         ) : (
