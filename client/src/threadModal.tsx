@@ -21,14 +21,14 @@ interface ModalProps {
 interface ModalState {
   subthreads: Subthread[] | null;
   error: string | null;
+  subthreadContent: string;
 }
 
 export class Modal extends React.Component<ModalProps, ModalState> {
-  subthreadContent = '';
-
   state: ModalState = {
     subthreads: null,
     error: null,
+    subthreadContent: '',
   };
 
   componentDidMount() {
@@ -61,7 +61,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     if (!this.props.show) {
       return null;
     }
-    console.log(this.props);
+    //console.log(this.props);
 
     const content = this.props.thread ? (
       <div>
@@ -82,7 +82,25 @@ export class Modal extends React.Component<ModalProps, ModalState> {
             </Column>
           </Row>
         </Card>
+        <Card title="New comment">
+          <Row>
+            <Column width={5}>
+              <Form.Textarea
+                value={this.state.subthreadContent}
+                onChange={(event) => this.setState({ subthreadContent: event.currentTarget.value })}
+              />
+            </Column>
+          </Row>
 
+          <Button.Success
+            onClick={() => {
+              this.postToSubthread(this.state.subthreadContent, 0, this.props.thread.threadId);
+              this.setState({ subthreadContent: '' });
+            }}
+          >
+            Post
+          </Button.Success>
+        </Card>
         {this.state.subthreads ? (
           <div>
             <Card title="Comments:">
@@ -98,30 +116,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                   </Column>
                 </Row>
               ))}
-            </Card>
-
-            <Card title="New comment">
-              <Row>
-                <Column width={1}>
-                  <Form.Label>Content:</Form.Label>
-                </Column>
-                <Column width={5}>
-                  <Form.Textarea
-                    value={this.subthreadContent}
-                    onChange={(event) => (this.subthreadContent = event.currentTarget.value)}
-                  />
-                </Column>
-              </Row>
-
-              <Button.Success
-                onClick={() => {
-                  this.postToSubthread(this.subthreadContent, 0, this.props.thread.threadId);
-
-                  this.subthreadContent = '';
-                }}
-              >
-                Create
-              </Button.Success>
             </Card>
           </div>
         ) : this.state.error ? (

@@ -74,6 +74,8 @@ class TaskService {
     });
   }
   createComment(content: string, likes: number, threadId: number) {
+    console.log('Hei');
+
     return new Promise<number>((resolve, reject) => {
       pool.query(
         'INSERT INTO Subthreads SET subthreadContent=?, likes=?, threadId=?',

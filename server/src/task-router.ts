@@ -36,6 +36,7 @@ router.get('/Subthreads/:id', (request, response) => {
 
 router.post('/Subthreads/:id', (request, response) => {
   const data = request.body;
+
   if (
     data &&
     data.subthreadContent &&
