@@ -43,12 +43,12 @@ router.post('/Subthreads/:id', (request, response) => {
     data.subthreadContent.length &&
     data.threadId &&
     data.threadId != 0
-  )
+  ) {
     taskService
-      .createComment(data.content, data.likes, data.threadId)
+      .createComment(data.subthreadContent, data.likes, data.threadId)
       .then((threadId) => response.send({ threadId: threadId }))
       .catch((error) => response.status(500).send(error));
-  else response.status(400).send('Missing content');
+  } else response.status(400).send('Missing content');
 });
 router.post('/threads', (request, response) => {
   const data = request.body;

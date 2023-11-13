@@ -48,11 +48,16 @@ export class Modal extends React.Component<ModalProps, ModalState> {
   postToSubthread(subthreadContent: String, likes: number, threadId: number) {
     //Create comment
     axios
-      .post(`/Subthreads/${threadId}`)
+      .post(`/Subthreads/${threadId}`, {
+        subthreadContent: subthreadContent,
+        likes: likes,
+        threadId: threadId,
+      })
       .then((response) => {
         this.setState({ subthreads: response.data, error: null });
       })
       .catch((error) => {
+        console.log('Hei');
         this.setState({ error: error.message, subthreads: null });
       });
   }
@@ -96,6 +101,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
             onClick={() => {
               this.postToSubthread(this.state.subthreadContent, 0, this.props.thread.threadId);
               this.setState({ subthreadContent: '' });
+              this.fetchSubthreads(this.props.thread.threadId);
             }}
           >
             Post
