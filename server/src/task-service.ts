@@ -88,7 +88,7 @@ class TaskService {
   }
 
   /**
-   * Delete task with given id.
+   * Delete thread with given id.
    */
   delete(id: number) {
     return new Promise<void>((resolve, reject) => {
@@ -97,6 +97,19 @@ class TaskService {
         if (results.affectedRows == 0) reject(new Error('No row deleted'));
         resolve();
       });
+    });
+  }
+  deleteComment(subthreadId: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'DELETE FROM Subthreads WHERE subthreadId = ?',
+        [subthreadId],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+          if (results.affectedRows == 0) reject(new Error('No row deleted'));
+          resolve();
+        },
+      );
     });
   }
 

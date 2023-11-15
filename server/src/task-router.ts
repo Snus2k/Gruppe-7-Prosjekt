@@ -74,6 +74,12 @@ router.delete('/threads/:id', (request, response) => {
     .then((_result) => response.send())
     .catch((error) => response.status(500).send(error));
 });
+router.delete('/subthreads/:subthreadId', (request, response) => {
+  taskService
+    .deleteComment(Number(request.params.subthreadId))
+    .then((_result) => response.send())
+    .catch((error) => response.status(500).send(error));
+});
 
 router.patch('/threads/:id', (request, response) => {
   const id = Number(request.params.id);

@@ -54,10 +54,10 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         threadId: threadId,
       })
       .then((response) => {
-        this.setState({ subthreads: response.data, error: null });
+        console.log(response);
+        this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
       })
       .catch((error) => {
-        console.log('Hei');
         this.setState({ error: error.message, subthreads: null });
       });
   }
@@ -66,7 +66,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     if (!this.props.show) {
       return null;
     }
-    //console.log(this.props);
 
     const content = this.props.thread ? (
       <div>
@@ -101,7 +100,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
             onClick={() => {
               this.postToSubthread(this.state.subthreadContent, 0, this.props.thread.threadId);
               this.setState({ subthreadContent: '' });
-              this.fetchSubthreads(this.props.thread.threadId);
             }}
           >
             Post
@@ -119,6 +117,21 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                         <b>Likes: {subthread.likes}</b>
                       </Column>
                     </Card>
+                  </Column>
+                  <Column>
+                    <Button.Danger
+                      small={true}
+                      onClick={() =>
+                        axios.delete(`/subthreads/${subthread.subthreadId}`).then(() => {
+                          this.setState({
+                            subthreads: this.fetchSubthreads(subthread.threadId),
+                            error: null,
+                          });
+                        })
+                      }
+                    >
+                      Delete Comment
+                    </Button.Danger>
                   </Column>
                 </Row>
               ))}
