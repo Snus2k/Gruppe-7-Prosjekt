@@ -62,6 +62,41 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       });
   }
 
+  updateLikesOnServer(threadId: number, likes: number) {
+    axios
+      .patch(`/threads/${threadId}`, { likes })
+      .then(() => {})
+
+      .catch((error) => {
+        // Handle error
+      });
+  }
+
+  updateCommentLikesOnServer(subthreadId: number, likes: number) {
+    axios
+      .patch(`/subthreads/${subthreadId}`, { likes })
+      .then(() => {})
+
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  handleLikeDislike(isLike: boolean) {
+    const { thread } = this.props;
+    if (thread) {
+      const updatedLikes = isLike ? thread.likes + 1 : thread.likes - 1;
+
+      this.updateLikesOnServer(thread.threadId, updatedLikes);
+    }
+  }
+  handleCommentLike() {
+    const { subthread } = this.props;
+    console.log(subthread);
+
+    this.updateCommentLikesOnServer(subthread.subthreadId, updatedLikes);
+  }
+
   render() {
     if (!this.props.show) {
       return null;
@@ -78,8 +113,8 @@ export class Modal extends React.Component<ModalProps, ModalState> {
               <b>Likes: {this.props.thread.likes}</b>
             </Column>
             <Column>
-              <Button.Light onClick={() => {}}> 👍</Button.Light>
-              <Button.Light onClick={() => {}}> 👎</Button.Light>
+              <Button.Light onClick={() => this.handleLikeDislike(true)}> 👍 </Button.Light>
+              <Button.Light onClick={() => this.handleLikeDislike(false)}> 👎 </Button.Light>
             </Column>
             <Column>
               <Button.Light onClick={() => {}}> ⭐️ </Button.Light>
@@ -116,22 +151,23 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                       <Column right={true}>
                         <b>Likes: {subthread.likes}</b>
                       </Column>
+                      <Column>
+                        <Button.Light onClick={() => this.handleCommentLike()}> 👍 </Button.Light>
+                        <Button.Danger
+                          small={true}
+                          onClick={() =>
+                            axios.delete(`/subthreads/${subthread.subthreadId}`).then(() => {
+                              this.setState({
+                                subthreads: this.fetchSubthreads(subthread.threadId),
+                                error: null,
+                              });
+                            })
+                          }
+                        >
+                          Delete Comment
+                        </Button.Danger>
+                      </Column>
                     </Card>
-                  </Column>
-                  <Column>
-                    <Button.Danger
-                      small={true}
-                      onClick={() =>
-                        axios.delete(`/subthreads/${subthread.subthreadId}`).then(() => {
-                          this.setState({
-                            subthreads: this.fetchSubthreads(subthread.threadId),
-                            error: null,
-                          });
-                        })
-                      }
-                    >
-                      Delete Comment
-                    </Button.Danger>
                   </Column>
                 </Row>
               ))}

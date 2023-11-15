@@ -83,15 +83,22 @@ router.delete('/subthreads/:subthreadId', (request, response) => {
 
 router.patch('/threads/:id', (request, response) => {
   const id = Number(request.params.id);
+  const likes = request.body.likes;
   taskService
-    .patch(id)
-    .then(() => {
-      response.status(204).send();
-    })
-    .catch((error) => {
-      console.error('Feil under oppdatering:', error);
-      response.status(500).send('Feil under oppdatering');
-    });
+    .updateLikes(id, likes)
+    .then(() => response.status(204).send())
+    .catch((error) => response.status(500).send(error));
+});
+
+router.patch('/subthreads/:subthreadId', (request, response) => {
+  console.log(request.params);
+
+  const id = Number(request.params.subthreadId);
+  const likes = request.body.likes;
+  taskService
+    .updateLikes(id, likes)
+    .then(() => response.status(204).send())
+    .catch((error) => response.status(500).send(error));
 });
 
 export default router;
