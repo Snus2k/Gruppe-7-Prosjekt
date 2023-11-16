@@ -8,7 +8,7 @@ import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import { Modal } from './threadModal';
 
-class TaskList extends Component {
+export class TaskList extends Component {
   threads: Thread[] = [];
   tempThreads: Thread[] = [];
   sortToggle = 'Sort by: None';
@@ -248,7 +248,6 @@ class ThreadNew extends Component {
 
           <Button.Success
             onClick={() => {
-              console.log(this.title, this.likes, this.content, this.tag);
               taskService.create(this.title, this.content, this.likes, this.tag).then(() => {
                 // Reloads the tasks in the Tasks component
                 TaskList.instance()?.mounted(); // .? meaning: call TaskList.instance().mounted() if TaskList.instance() does not return null

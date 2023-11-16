@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Card, Row, Column, Form, Button } from './widgets';
 import { Thread } from './task-service';
-
+import { TaskList } from './index';
 import './threadModal.css';
 
 interface Subthread {
@@ -122,9 +122,10 @@ export class Modal extends React.Component<ModalProps, ModalState> {
               {' '}
               <Button.Danger
                 onClick={() => {
-                  axios
-                    .delete(`/subthreads/${this.props.thread.threadId}`)
-                    .then(() => axios.delete(`/subthreads/${this.props.thread.threadId}`));
+                  axios.delete(`/threads/${this.props.thread.threadId}`).then(() => {
+                    TaskList.instance()?.mounted();
+                  });
+                  this.props.onClose;
                 }}
               >
                 Delete Post
