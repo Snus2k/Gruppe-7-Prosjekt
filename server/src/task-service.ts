@@ -136,6 +136,21 @@ class TaskService {
       );
     });
   }
+
+  updateCommentLikes(id: number, likes: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'UPDATE Subthreads SET likes = ? WHERE subthreadId = ?',
+        [likes, id],
+        (error, results) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve();
+        },
+      );
+    });
+  }
 }
 
 const taskService = new TaskService();

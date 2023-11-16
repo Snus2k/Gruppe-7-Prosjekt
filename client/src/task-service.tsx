@@ -35,11 +35,6 @@ class TaskService {
     return axios.get<subThread[]>('/subthreads').then((response) => response.data);
   }
 
-  /**
-   * Create new thread having the given values.
-   *
-   * Resolves the newly created thread id.
-   */
   create(title: string, content: string, likes: number, tag: string) {
     return axios
       .post<{ threadId: number }>('/threads', {
@@ -61,7 +56,6 @@ class TaskService {
       .then((response) => response.data.threadId);
   }
 
-  /////////OPPGAVER////////////////
   delete(id: number) {
     return axios.delete(`/threads/${id}`);
   }

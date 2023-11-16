@@ -81,19 +81,16 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       this.updateLikesOnServer(thread.threadId, updatedLikes);
     }
   }
-  handleCommentLike(subthreadId) {
-    const { subthread } = this.props;
-    console.log(this.props);
-
-    const updatedLikes = subthread.likes + 1;
-
-    this.updateCommentLikesOnServer(subthreadId, updatedLikes);
+  handleCommentLike(subthread: Subthread, isLike: boolean) {
+    const updatedLikes = isLike ? subthread.likes + 1 : subthread.likes - 1;
+    this.updateCommentLikesOnServer(subthread.subthreadId, updatedLikes, subthread.threadId);
   }
-  updateCommentLikesOnServer(subthreadId: number, likes: number) {
+  updateCommentLikesOnServer(subthreadId: number, likes: number, threadId: number) {
     axios
       .patch(`/subthreads/${subthreadId}`, { likes })
-      .then(() => {})
-
+      .then(() => {
+        this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
+      })
       .catch((error) => {
         console.error(error);
       });
@@ -120,6 +117,16 @@ export class Modal extends React.Component<ModalProps, ModalState> {
             </Column>
             <Column>
               <Button.Light onClick={() => {}}> ⭐️ </Button.Light>
+            </Column>
+            <Column>
+              {' '}
+              <Button.Danger
+                onClick={() => {
+                  axios.delete(this.props.thread.threadId).then(() => this.mounted());
+                }}
+              >
+                Delete Post
+              </Button.Danger>
             </Column>
           </Row>
         </Card>
@@ -154,8 +161,11 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                         <b>Likes: {subthread.likes}</b>
                       </Column>
                       <Column>
-                        <Button.Light onClick={() => this.handleCommentLike(subthread)}>
+                        <Button.Light onClick={() => this.handleCommentLike(subthread, true)}>
                           👍
+                        </Button.Light>
+                        <Button.Light onClick={() => this.handleCommentLike(subthread, false)}>
+                          👎
                         </Button.Light>
                         <Button.Danger
                           small={true}

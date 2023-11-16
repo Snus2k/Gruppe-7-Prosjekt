@@ -91,12 +91,10 @@ router.patch('/threads/:id', (request, response) => {
 });
 
 router.patch('/subthreads/:subthreadId', (request, response) => {
-  console.log(request.params);
-
   const id = Number(request.params.subthreadId);
   const likes = request.body.likes;
   taskService
-    .updateLikes(id, likes)
+    .updateCommentLikes(id, likes)
     .then(() => response.status(204).send())
     .catch((error) => response.status(500).send(error));
 });
