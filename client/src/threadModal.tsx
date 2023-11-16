@@ -122,7 +122,9 @@ export class Modal extends React.Component<ModalProps, ModalState> {
               {' '}
               <Button.Danger
                 onClick={() => {
-                  axios.delete(this.props.thread.threadId).then(() => this.mounted());
+                  axios
+                    .delete(`/subthreads/${this.props.thread.threadId}`)
+                    .then(() => axios.delete(`/subthreads/${this.props.thread.threadId}`));
                 }}
               >
                 Delete Post
@@ -201,7 +203,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       <div className="modal-overlay" onClick={this.props.onClose}>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           {content}
-          <Button.Danger onClick={this.props.onClose}>Close</Button.Danger>
+          <Button.Danger onClick={this.props.onClose}>Close Thread</Button.Danger>
         </div>
       </div>
     );

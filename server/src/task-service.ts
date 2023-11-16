@@ -92,11 +92,15 @@ class TaskService {
    */
   delete(id: number) {
     return new Promise<void>((resolve, reject) => {
-      pool.query('DELETE FROM Threads WHERE id = ?', [id], (error, results: ResultSetHeader) => {
-        if (error) return reject(error);
-        if (results.affectedRows == 0) reject(new Error('No row deleted'));
-        resolve();
-      });
+      pool.query(
+        'DELETE FROM Threads WHERE threadId = ?',
+        [id],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+          if (results.affectedRows == 0) reject(new Error('No row deleted'));
+          resolve();
+        },
+      );
     });
   }
   deleteComment(subthreadId: number) {

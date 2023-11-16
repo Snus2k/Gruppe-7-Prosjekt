@@ -118,15 +118,7 @@ class TaskList extends Component {
               </Column>
               <Column>{thread.likes} 👍</Column>
               <Column>{thread.tag}</Column>
-              <Column>
-                <Button.Danger
-                  onClick={() => {
-                    taskService.delete(thread.threadId).then(() => this.mounted());
-                  }}
-                >
-                  X
-                </Button.Danger>
-              </Column>
+              <Column></Column>
             </Row>
           ))}
         </Card>
