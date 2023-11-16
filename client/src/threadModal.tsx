@@ -54,7 +54,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         threadId: threadId,
       })
       .then((response) => {
-        console.log(response);
         this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
       })
       .catch((error) => {
@@ -65,17 +64,9 @@ export class Modal extends React.Component<ModalProps, ModalState> {
   updateLikesOnServer(threadId: number, likes: number) {
     axios
       .patch(`/threads/${threadId}`, { likes })
-      .then(() => {})
-
-      .catch((error) => {
-        // Handle error
-      });
-  }
-
-  updateCommentLikesOnServer(subthreadId: number, likes: number) {
-    axios
-      .patch(`/subthreads/${subthreadId}`, { likes })
-      .then(() => {})
+      .then(() => {
+        /*rerender her?*/
+      })
 
       .catch((error) => {
         console.error(error);
@@ -90,11 +81,22 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       this.updateLikesOnServer(thread.threadId, updatedLikes);
     }
   }
-  handleCommentLike() {
+  handleCommentLike(subthreadId) {
     const { subthread } = this.props;
-    console.log(subthread);
+    console.log(this.props);
 
-    this.updateCommentLikesOnServer(subthread.subthreadId, updatedLikes);
+    const updatedLikes = subthread.likes + 1;
+
+    this.updateCommentLikesOnServer(subthreadId, updatedLikes);
+  }
+  updateCommentLikesOnServer(subthreadId: number, likes: number) {
+    axios
+      .patch(`/subthreads/${subthreadId}`, { likes })
+      .then(() => {})
+
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   render() {
@@ -152,7 +154,9 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                         <b>Likes: {subthread.likes}</b>
                       </Column>
                       <Column>
-                        <Button.Light onClick={() => this.handleCommentLike()}> 👍 </Button.Light>
+                        <Button.Light onClick={() => this.handleCommentLike(subthread)}>
+                          👍
+                        </Button.Light>
                         <Button.Danger
                           small={true}
                           onClick={() =>
