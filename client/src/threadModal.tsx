@@ -125,7 +125,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                   axios.delete(`/threads/${this.props.thread.threadId}`).then(() => {
                     TaskList.instance()?.mounted();
                   });
-                  this.props.onClose;
                 }}
               >
                 Delete Post
