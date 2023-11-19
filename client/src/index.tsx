@@ -1,12 +1,22 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Component } from 'react-simplified';
-import { Card, Row, Column, Form, Button } from './widgets';
+import { Card, Row, Column, Form, Button, NavBar } from './widgets';
 import taskService, { Thread } from './task-service';
 import axios from 'axios';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import { Modal } from './threadModal';
+
+class Menu extends Component {
+  render() {
+    return (
+      <NavBar brand="Threads">
+        <NavBar.Link to="/categories">Tag list</NavBar.Link>
+      </NavBar>
+    );
+  }
+}
 
 export class TaskList extends Component {
   threads: Thread[] = [];
@@ -129,6 +139,7 @@ export class TaskList extends Component {
             thread={this.state.selectedThread}
           />
         )}
+        <ThreadNew />
       </div>
     );
   }
@@ -265,11 +276,69 @@ class ThreadNew extends Component {
   }
 }
 
+class Tags extends Component {
+  threads: Thread[] = [];
+  tags = [
+    { tagTitle: 'Career', tagCount: 0 },
+    { tagTitle: 'Entertainment', tagCount: 0 },
+    { tagTitle: 'Food', tagCount: 0 },
+    { tagTitle: 'Health', tagCount: 0 },
+    { tagTitle: 'Lifestyle', tagCount: 0 },
+    { tagTitle: 'Reading', tagCount: 0 },
+    { tagTitle: 'Technology', tagCount: 0 },
+  ];
+
+  render() {
+    return (
+      <div>
+        <Card title="Tags">
+          <Row>
+            <Column> Career: {this.tags[0].tagCount} </Column>
+          </Row>
+          <Row>
+            <Column> Entertainment: {this.tags[1].tagCount}</Column>
+          </Row>
+          <Row>
+            <Column> Food: {this.tags[2].tagCount}</Column>
+          </Row>
+          <Row>
+            <Column> Health: {this.tags[3].tagCount}</Column>
+          </Row>
+          <Row>
+            <Column> Lifestyle:{this.tags[4].tagCount} </Column>
+          </Row>
+
+          <Row>
+            <Column> Reading: {this.tags[5].tagCount}</Column>
+          </Row>
+          <Row>
+            <Column> Technology:{this.tags[6].tagCount} </Column>
+          </Row>
+        </Card>
+      </div>
+    );
+  }
+  mounted() {
+    taskService.getAll().then((threads) => {
+      this.threads = threads;
+
+      for (let index = 0; index <= this.tags.length; index++) {
+        this.threads.forEach((thread) => {
+          if (thread.tag == this.tags[index].tagTitle) {
+            this.tags[index].tagCount++;
+          }
+        });
+      }
+    });
+  }
+}
+
 let root = document.getElementById('root');
 if (root)
   createRoot(root).render(
     <HashRouter>
-      <TaskList />
-      <ThreadNew />
+      <Menu />
+      <Route exact path="/" component={TaskList} />
+      <Route exact path="/categories" component={Tags} />
     </HashRouter>,
   );

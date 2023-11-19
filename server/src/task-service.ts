@@ -55,6 +55,12 @@ class TaskService {
     });
   }
 
+  /*
+  getAllThreadsWhithSpecifiedTag(tag: string) {
+    return axios.get<Thread>('/threads').then((response) => response.data);
+  }
+*/
+
   /**
    * Create new task having the given title.
    *
