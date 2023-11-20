@@ -65,7 +65,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     axios
       .patch(`/threads/${threadId}`, { likes })
       .then(() => {
-        /*rerender her?*/
+        TaskList.instance()?.mounted();
       })
 
       .catch((error) => {
@@ -77,7 +77,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     const { thread } = this.props;
     if (thread) {
       const updatedLikes = isLike ? thread.likes + 1 : thread.likes - 1;
-
       this.updateLikesOnServer(thread.threadId, updatedLikes);
     }
   }
@@ -124,6 +123,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                 onClick={() => {
                   axios.delete(`/threads/${this.props.thread.threadId}`).then(() => {
                     TaskList.instance()?.mounted();
+                    this.setState({ isModalOpen: false });
                   });
                 }}
               >
