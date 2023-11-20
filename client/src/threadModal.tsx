@@ -115,9 +115,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
               <Button.Light onClick={() => this.handleLikeDislike(true)}> 👍 </Button.Light>
               <Button.Light onClick={() => this.handleLikeDislike(false)}> 👎 </Button.Light>
             </Column>
-            <Column>
-              <Button.Light onClick={() => {}}> ⭐️ </Button.Light>
-            </Column>
+
             <Column>
               {' '}
               <Button.Danger

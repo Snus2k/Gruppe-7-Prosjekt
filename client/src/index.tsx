@@ -13,6 +13,7 @@ class Menu extends Component {
     return (
       <NavBar brand="Threads">
         <NavBar.Link to="/categories">Tag list</NavBar.Link>
+        <NavBar.Link to="/favorites">Favorites</NavBar.Link>
       </NavBar>
     );
   }
@@ -25,6 +26,9 @@ export class TaskList extends Component {
 
   searchHitThreads: Thread[] = [];
   searchText: string = 'Search title';
+
+  favoriteArray: string | null = localStorage.getItem('globalFavoriteArray');
+  globalFavoriteArray: string[] = [];
 
   state = {
     isModalOpen: false,
@@ -128,7 +132,22 @@ export class TaskList extends Component {
               </Column>
               <Column>{thread.likes} 👍</Column>
               <Column>{thread.tag}</Column>
-              <Column></Column>
+              <Column>
+                {
+                  <Button.Light
+                    onClick={() => {
+                      this.globalFavoriteArray.push(thread.title);
+
+                      localStorage.setItem(
+                        'globalFavoriteArray',
+                        JSON.stringify(this.globalFavoriteArray),
+                      );
+                    }}
+                  >
+                    ⭐️
+                  </Button.Light>
+                }
+              </Column>
             </Row>
           ))}
         </Card>
@@ -145,6 +164,10 @@ export class TaskList extends Component {
   }
 
   mounted() {
+    if (this.favoriteArray) {
+      this.globalFavoriteArray = JSON.parse(this.favoriteArray);
+    }
+
     taskService.getAll().then((threads) => {
       if (this.searchText != '' && this.searchText != 'Search title') {
         this.threads = this.searchHitThreads;
@@ -333,6 +356,50 @@ class Tags extends Component {
   }
 }
 
+class Favorites extends Component {
+  favoriteArray: string | null = localStorage.getItem('globalFavoriteArray');
+  storedGlobalFavoriteArray: string[] = [];
+
+  render() {
+    return (
+      <div>
+        <Card title="Favorites">
+          {this.favoriteArray
+            ? this.storedGlobalFavoriteArray.map((thread) => (
+                <Row>
+                  <Column>{thread}</Column>
+
+                  <Column>
+                    {
+                      <Button.Danger
+                        onClick={() => {
+                          let updatedArray = this.storedGlobalFavoriteArray.filter(
+                            (element) => element !== thread,
+                          );
+                          localStorage.setItem('globalFavoriteArray', JSON.stringify(updatedArray));
+                          Favorites.instance()?.mounted();
+                        }}
+                      >
+                        X
+                      </Button.Danger>
+                    }
+                  </Column>
+                </Row>
+              ))
+            : 'No favorite threads'}
+        </Card>
+      </div>
+    );
+  }
+
+  mounted() {
+    if (this.favoriteArray) {
+      this.storedGlobalFavoriteArray = JSON.parse(this.favoriteArray);
+      console.log(this.favoriteArray);
+    }
+  }
+}
+
 let root = document.getElementById('root');
 if (root)
   createRoot(root).render(
@@ -340,5 +407,6 @@ if (root)
       <Menu />
       <Route exact path="/" component={TaskList} />
       <Route exact path="/categories" component={Tags} />
+      <Route exact path="/favorites" component={Favorites} />
     </HashRouter>,
   );
