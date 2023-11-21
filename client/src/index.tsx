@@ -7,6 +7,7 @@ import axios from 'axios';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { createHashHistory } from 'history';
 import { Modal } from './threadModal';
+import './style.css';
 
 class Menu extends Component {
   render() {
@@ -237,10 +238,10 @@ class ThreadNew extends Component {
       <div style={{ position: 'fixed', width: '100%', bottom: 0, left: 0, zIndex: 1 }}>
         <Card title="New thread">
           <Row>
-            <Column width={1}>
+            <Column width={5}>
               <Form.Label>Title:</Form.Label>
             </Column>
-            <Column width={4}>
+            <Column width={5}>
               <Form.Input
                 type="text"
                 value={this.title}
@@ -249,7 +250,7 @@ class ThreadNew extends Component {
             </Column>
           </Row>
           <Row>
-            <Column width={1}>
+            <Column width={5}>
               <Form.Label>Content:</Form.Label>
             </Column>
             <Column width={5}>
@@ -261,7 +262,7 @@ class ThreadNew extends Component {
           </Row>
 
           <Row>
-            <Column width={1}>
+            <Column width={7}>
               <Form.Label>Tag:</Form.Label>
             </Column>
             <Column>

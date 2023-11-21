@@ -1,0 +1,72 @@
+body {
+  background-color: gainsboro;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.navbar {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
+.card {
+  background: linear-gradient(135deg, #cfe0f5, #afcfe8);
+  border: 1px solid #7fa9d8;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin: 0px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.column {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #7fa9d8;
+  border-radius: 8px;
+  color: #374b66;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(1.25px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #7fa9d8;
+  padding: 3px;
+  padding-bottom: 2px;
+  padding-top: 1px;
+  border-radius: 10px;
+  z-index: 1001;
+  max-height: 90vh;
+  overflow-y: auto;
+}

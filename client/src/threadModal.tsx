@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Card, Row, Column, Form, Button } from './widgets';
 import { Thread } from './task-service';
 import { TaskList } from './index';
-import './threadModal.css';
+import './style.css';
 
 interface Subthread {
   threadId: number;
