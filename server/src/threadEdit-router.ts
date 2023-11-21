@@ -1,18 +1,13 @@
-import express, { request, response } from 'express';
-import taskService from './task-service';
+import express from 'express';
+import threadEditService from './threadEdit-Service';
 
-/**
- * Express router containing task methods.
- */
 const router = express.Router();
 
-router.patch('/edit/threads/:id', (request, response) => {
-  console.log('hei fra router.patch');
-
+router.patch('/:id', (request, response) => {
   const id = Number(request.params.id);
-  const { title, content, tag } = request.body;
-  taskService
-    .updateThread(id, title, content, tag)
+  const { threadContent } = request.body;
+  threadEditService
+    .updateThread(id, threadContent)
     .then(() => response.status(204).send())
     .catch((error) => response.status(500).send(error));
 });
