@@ -379,7 +379,7 @@ class Favorites extends Component {
                             (element) => element !== thread,
                           );
                           localStorage.setItem('globalFavoriteArray', JSON.stringify(updatedArray));
-                          Favorites.instance()?.mounted();
+                          window.location.reload();
                         }}
                       >
                         X
