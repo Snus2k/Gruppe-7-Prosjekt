@@ -44,17 +44,17 @@ export class Modal extends React.Component<ModalProps, ModalState> {
   submitEditedContent = () => {
     const { threadId } = this.props.thread;
     const { editedContent } = this.state;
-    console.log(threadId);
 
     axios
       .patch(`/edit/threads/${threadId}`, { threadContent: editedContent })
       .then(() => {
-        this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
+        this.props.thread.threadContent = editedContent;
       })
       .catch((error) => {
         console.error(error);
       });
   };
+
   componentDidMount() {
     this.fetchSubthreads(this.props.thread.threadId);
   }
@@ -76,6 +76,9 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         subthreadContent: subthreadContent,
         likes: likes,
         threadId: threadId,
+      })
+      .then(() => {
+        TaskList.instance()?.mounted();
       })
       .then((response) => {
         this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
@@ -153,6 +156,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                 onClick={() => {
                   axios.delete(`/threads/${this.props.thread.threadId}`).then(() => {
                     TaskList.instance()?.mounted();
+                    window.location.reload();
                     this.setState({ isModalOpen: false });
                   });
                 }}
