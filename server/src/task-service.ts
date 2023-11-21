@@ -161,6 +161,21 @@ class TaskService {
       );
     });
   }
+
+  updateThread(id: number, title: string, content: string, tag: string) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'UPDATE Threads SET title = ?, threadContent = ?, tag = ? WHERE threadId = ?',
+        [title, content, tag, id],
+        (error, results) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve();
+        },
+      );
+    });
+  }
 }
 
 const taskService = new TaskService();

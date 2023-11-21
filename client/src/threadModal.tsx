@@ -29,8 +29,32 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     subthreads: null,
     error: null,
     subthreadContent: '',
+    editingThread: false,
   };
 
+  toggleEditThread = () => {
+    if (this.state.editingThread) {
+      this.submitEditedContent();
+    } else {
+      this.setState({ editedContent: this.props.thread?.threadContent || '' });
+    }
+    this.setState((prevState) => ({ editingThread: !prevState.editingThread }));
+  };
+
+  submitEditedContent = () => {
+    const { threadId } = this.props.thread;
+    const { editedContent } = this.state;
+    console.log(threadId);
+
+    axios
+      .patch(`/edit/threads/${threadId}`, { threadContent: editedContent })
+      .then(() => {
+        this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   componentDidMount() {
     this.fetchSubthreads(this.props.thread.threadId);
   }
@@ -65,7 +89,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     axios
       .patch(`/threads/${threadId}`, { likes })
       .then(() => {
-        /*rerender her?*/
+        TaskList.instance()?.mounted();
       })
 
       .catch((error) => {
@@ -77,7 +101,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
     const { thread } = this.props;
     if (thread) {
       const updatedLikes = isLike ? thread.likes + 1 : thread.likes - 1;
-
       this.updateLikesOnServer(thread.threadId, updatedLikes);
     }
   }
@@ -105,7 +128,15 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       <div>
         <Card title={this.props.thread.title}>
           <Row>
-            <p>{this.props.thread.threadContent}</p>
+            {this.state.editingThread ? (
+              <Form.Input
+                type="text"
+                value={this.state.editedContent}
+                onChange={(event) => this.setState({ editedContent: event.currentTarget.value })}
+              />
+            ) : (
+              <p>{this.props.thread?.threadContent}</p>
+            )}
           </Row>
           <Row>
             <Column>
@@ -122,11 +153,15 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                 onClick={() => {
                   axios.delete(`/threads/${this.props.thread.threadId}`).then(() => {
                     TaskList.instance()?.mounted();
+                    this.setState({ isModalOpen: false });
                   });
                 }}
               >
                 Delete Post
               </Button.Danger>
+              <Button.Success small={true} onClick={this.toggleEditThread}>
+                {this.state.editingThread ? 'Save Changes' : 'Edit Post'}
+              </Button.Success>
             </Column>
           </Row>
         </Card>
