@@ -268,8 +268,13 @@ class ThreadNew extends Component {
             <Column>
               <Form.Select
                 value={this.tag}
-                onChange={(event) => (this.tag = event.currentTarget.value)}
+                onChange={(event) =>
+                  event.currentTarget.value != 'None'
+                    ? (this.tag = event.currentTarget.value)
+                    : (this.tag = '')
+                }
               >
+                <option value="None">None</option>
                 <option value="Career">Career</option>
                 <option value="Entertainment">Entertainment</option>
                 <option value="Food">Food</option>
