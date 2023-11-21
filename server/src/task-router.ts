@@ -2,7 +2,7 @@ import express, { request, response } from 'express';
 import taskService from './task-service';
 
 /**
- * Express router containing task methods.
+ * Express router containing thread methods.
  */
 const router = express.Router();
 
@@ -81,7 +81,7 @@ router.delete('/subthreads/:subthreadId', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-router.patch('/threads/:id', (request, response) => {
+/* router.patch('/threads/:id', (request, response) => {
   const id = Number(request.params.id);
   const likes = request.body.likes;
   taskService
@@ -89,23 +89,12 @@ router.patch('/threads/:id', (request, response) => {
     .then(() => response.status(204).send())
     .catch((error) => response.status(500).send(error));
 });
-
+ */
 router.patch('/subthreads/:subthreadId', (request, response) => {
   const id = Number(request.params.subthreadId);
   const likes = request.body.likes;
   taskService
     .updateCommentLikes(id, likes)
-    .then(() => response.status(204).send())
-    .catch((error) => response.status(500).send(error));
-});
-
-router.patch('/B/threads/:id', (request, response) => {
-  console.log('hei fra router.patch');
-
-  const id = Number(request.params.id);
-  const { title, content, tag } = request.body;
-  taskService
-    .updateThread(id, title, content, tag)
     .then(() => response.status(204).send())
     .catch((error) => response.status(500).send(error));
 });

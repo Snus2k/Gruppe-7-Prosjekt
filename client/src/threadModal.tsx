@@ -52,7 +52,6 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         this.setState({ subthreads: this.fetchSubthreads(threadId), error: null });
       })
       .catch((error) => {
-        console.log('faen');
         console.error(error);
       });
   };

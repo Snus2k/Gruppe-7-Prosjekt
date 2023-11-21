@@ -11,6 +11,6 @@ app.use(express.json());
 
 // Since API is not compatible with v1, API version is increased to v2
 app.use('/api/v2', taskRouter);
-app.use('/api/v2/edit', threadEditRouter);
+app.use('/api/v2/edit/threads', threadEditRouter);
 
 export default app;
