@@ -70,7 +70,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
       });
   }
   postToSubthread(subthreadContent: String, likes: number, threadId: number) {
-    //Create comment
+    //Create Subthread
     axios
       .post(`/Subthreads/${threadId}`, {
         subthreadContent: subthreadContent,
@@ -169,7 +169,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
             </Column>
           </Row>
         </Card>
-        <Card title="New comment">
+        <Card title="New Subthread">
           <Row>
             <Column width={5}>
               <Form.Textarea
@@ -190,7 +190,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         </Card>
         {this.state.subthreads ? (
           <div>
-            <Card title="Comments:">
+            <Card title="Subthreads:">
               {this.state.subthreads.map((subthread) => (
                 <Row key={subthread.subthreadId}>
                   <Column>
@@ -217,7 +217,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
                             })
                           }
                         >
-                          Delete Comment
+                          Delete Subthread
                         </Button.Danger>
                       </Column>
                     </Card>
@@ -229,7 +229,7 @@ export class Modal extends React.Component<ModalProps, ModalState> {
         ) : this.state.error ? (
           <div>Error: {this.state.error}</div>
         ) : (
-          <div>Loading comments...</div>
+          <div>Loading Subthreads...</div>
         )}
       </div>
     ) : (
